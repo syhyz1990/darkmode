@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           1.0.2
+// @version           1.0.3
 // @icon              https://www.baiduyun.wiki/darkmode.png
 // @description       实现任意网站的夜间模式，支持网站白名单
-// @author            syhyz1990
+// @author            YouXiaoHou
 // @license           MIT
 // @supportURL        https://github.com/syhyz1990/darkmode
 // @updateURL         https://www.baiduyun.wiki/darkmode.user.js
@@ -77,6 +77,8 @@
         o.style.bottom = '32px'
         o.style.cursor = 'pointer'
         o.style.zIndex = '99999'
+        o.style.fontSize = '14px'
+        o.style.userSelect = 'none'
         o.innerHTML = '🌓'
         o.id = 'darkBtn'
         document.body.appendChild(o)
