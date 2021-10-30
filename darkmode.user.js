@@ -37,7 +37,7 @@
             .dark-mode, .dark-mode::before, .dark-mode body, .dark-mode body::before, .dark-mode input, .dark-mode select,.dark-mode button {background-image: none !important}
             .dark-mode video,.dark-mode code { background: transparent !important; }
           }
-          @media print { .no-print, .no-print * { display: none !important; } }
+          @media print { .no-print { display: none !important; } }
         `)
       },
 
