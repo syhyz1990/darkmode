@@ -25,16 +25,19 @@
       addStyle() {
         //黑暗模式样式
         GM_addStyle(`
-        .dark-mode, .dark-mode * { color: #eeeeee !important; background-color: #292929 !important; }
-        .dark-mode img, .dark-mode video {z-index: 1}
-        .dark-mode * {border-color: #555555 !important}
-        .dark-mode cite, .dark-mode cite * {color: #029833 !important}
-        .dark-mode :link, .dark-mode :link * {color: #8db2e5 !important}
-        .dark-mode input, .dark-mode textarea {background-color: #333333 !important}
-        .dark-mode a {background-color: rgba(255, 255, 255, 0.01) !important}
-        .dark-mode :visited, .dark-mode :visited * {color: rgb(211, 138, 138) !important}
-        .dark-mode, .dark-mode::before, .dark-mode body, .dark-mode body::before, .dark-mode input, .dark-mode select,.dark-mode button {background-image: none !important}
-        .dark-mode video,.dark-mode code { background: transparent !important; }
+          @media screen {
+            .dark-mode, .dark-mode * { color: #eeeeee !important; background-color: #292929 !important; }
+            .dark-mode img, .dark-mode video {z-index: 1}
+            .dark-mode * {border-color: #555555 !important}
+            .dark-mode cite, .dark-mode cite * {color: #029833 !important}
+            .dark-mode :link, .dark-mode :link * {color: #8db2e5 !important}
+            .dark-mode input, .dark-mode textarea {background-color: #333333 !important}
+            .dark-mode a {background-color: rgba(255, 255, 255, 0.01) !important}
+            .dark-mode :visited, .dark-mode :visited * {color: rgb(211, 138, 138) !important}
+            .dark-mode, .dark-mode::before, .dark-mode body, .dark-mode body::before, .dark-mode input, .dark-mode select,.dark-mode button {background-image: none !important}
+            .dark-mode video,.dark-mode code { background: transparent !important; }
+          }
+          @media print { .no-print { display: none !important; } }
         `)
       },
 
@@ -80,6 +83,7 @@
         o.style.fontSize = '14px'
         o.style.userSelect = 'none'
         o.innerHTML = '🌓'
+        o.className = 'no-print'
         o.id = 'darkBtn'
         document.body.appendChild(o)
 
