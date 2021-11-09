@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           1.0.3
+// @version           1.0.4
 // @icon              https://www.baiduyun.wiki/darkmode.png
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
@@ -25,7 +25,7 @@
       addStyle() {
         //黑暗模式样式
         GM_addStyle(`
-          @media screen {
+        @media screen {
             .dark-mode, .dark-mode * { color: #eeeeee !important; background-color: #292929 !important; }
             .dark-mode img, .dark-mode video {z-index: 1}
             .dark-mode * {border-color: #555555 !important}
@@ -36,8 +36,8 @@
             .dark-mode :visited, .dark-mode :visited * {color: rgb(211, 138, 138) !important}
             .dark-mode, .dark-mode::before, .dark-mode body, .dark-mode body::before, .dark-mode input, .dark-mode select,.dark-mode button {background-image: none !important}
             .dark-mode video,.dark-mode code { background: transparent !important; }
-          }
-          @media print { .no-print { display: none !important; } }
+        }
+        @media print { .no-print { display: none !important; } }
         `)
       },
 
