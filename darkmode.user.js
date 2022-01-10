@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.0.2
+// @version           2.0.3
 // @icon              https://www.youxiaohou.com/darkmode.png
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
 // @license           MIT
+// @homepage          https://www.youxiaohou.com/tool/install-darkmode.html
 // @supportURL        https://github.com/syhyz1990/darkmode
 // @updateURL         https://www.youxiaohou.com/darkmode.user.js
 // @downloadURL       https://www.youxiaohou.com/darkmode.user.js
@@ -191,7 +192,6 @@
                 darkIcon = `<div style="background: #333;display: flex;align-items: center;justify-content: center;width: ${util.getValue('button_size')}px;height: ${util.getValue('button_size')}px;border-radius: 50%"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="${util.getValue('button_size') / 1.5}" height="${util.getValue('button_size') / 1.5}"><path d="M513.173 128A255.061 255.061 0 0 0 448 298.667c0 141.376 114.624 256 256 256a255.36 255.36 0 0 0 189.803-84.203A392.855 392.855 0 0 1 896 512c0 212.075-171.925 384-384 384S128 724.075 128 512c0-209.707 168.107-380.16 376.96-383.936l8.192-.064zM395.35 213.93l-3.52 1.409C274.645 262.827 192 377.77 192 512c0 176.725 143.275 320 320 320 145.408 0 268.16-96.981 307.115-229.803l1.536-5.504-1.6.64a319.51 319.51 0 0 1-106.496 21.227l-8.555.107c-176.725 0-320-143.275-320-320 0-28.48 3.755-56.406 10.944-83.2l.405-1.536z" fill="#adbac7"/></svg></div>`;
 
             let o = document.createElement('div'),
-                darkMode = util.getValue('dark_mode'),
                 buttonPostion = util.getValue('button_position');
             o.style.position = 'fixed';
             o.style[buttonPostion] = '25px';
@@ -201,11 +201,11 @@
             o.style.userSelect = 'none';
             o.className = 'no-print';
             o.id = 'darkBtn';
-            darkMode === 'dark' ? o.innerHTML = lightIcon : o.innerHTML = darkIcon;
+            this.isDarkMode() ? o.innerHTML = lightIcon : o.innerHTML = darkIcon;
             document.body.appendChild(o);
 
             o.addEventListener("click", () => {
-                if (util.getValue('dark_mode') === 'dark') { //黑暗模式变为正常模式
+                if (this.isDarkMode()) { //黑暗模式变为正常模式
                     util.setValue('dark_mode', 'light');
                     o.innerHTML = darkIcon;
                     this.disableDarkMode();
@@ -299,11 +299,15 @@
             });
         },
 
+        isDarkMode() {
+            return util.getValue('dark_mode') === 'dark'
+        },
+
         init() {
             this.initValue();
             this.isTopWindow() && this.registerMenuCommand();
             if (util.getValue('exclude_list').includes(location.host)) return;
-            if (util.getValue('dark_mode') === 'dark') {
+            if (this.isDarkMode()) {
                 try {
                     this.enableDarkMode();
                 } catch (e) {
@@ -314,7 +318,7 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                this.addListener();
+                this.isDarkMode() && this.addListener();
                 this.isTopWindow() && this.addButton();
             });
         }
