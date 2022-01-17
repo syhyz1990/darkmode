@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.0.6
+// @version           2.1.0
 // @icon              https://www.youxiaohou.com/darkmode.png
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
@@ -19,30 +19,20 @@
 // @grant             GM_setValue
 // @grant             GM_registerMenuCommand
 // @grant             GM_getResourceText
-// @grant             window.onurlchange
 // ==/UserScript==
 
 ;(function () {
     'use strict';
 
-    const fixedStyle = ['www.baidu.com']; //弹出框错乱的网站css插入到<html>而非<head>
     let util = {
         getValue(name) {
             return GM_getValue(name);
         },
+
         setValue(name, value) {
             GM_setValue(name, value);
         },
-        include(str, arr) {
-            str = str.replace(/[-_]/ig, '');
-            for (let i = 0, l = arr.length; i < l; i++) {
-                let val = arr[i];
-                if (val !== '' && str.toLowerCase().indexOf(val.toLowerCase()) > -1) {
-                    return true;
-                }
-            }
-            return false;
-        },
+
         addStyle(id, tag, css) {
             tag = tag || 'style';
             let doc = document, styleDom = doc.getElementById(id);
@@ -51,9 +41,18 @@
             style.rel = 'stylesheet';
             style.id = id;
             tag === 'style' ? style.innerHTML = css : style.href = css;
-            let root = this.include(location.href, fixedStyle);
-            root ? doc.documentElement.appendChild(style) : doc.getElementsByTagName('head')[0].appendChild(style);
+            document.head.appendChild(style);
         },
+
+        removeElementById(eleId) {
+            let ele = document.getElementById(eleId);
+            ele && ele.parentNode.removeChild(ele);
+        },
+
+        hasElementById(eleId) {
+            return document.getElementById(eleId);
+        },
+
         filter: '-webkit-filter: url(#dark-mode-filter) !important; filter: url(#dark-mode-filter) !important;',
         reverseFilter: '-webkit-filter: url(#dark-mode-reverse-filter) !important; filter: url(#dark-mode-reverse-filter) !important;',
         noneFilter: '-webkit-filter: none !important; filter: none !important;',
@@ -75,7 +74,7 @@
                 value: 30
             }, {
                 name: 'exclude_list',
-                value: ['youku.com', 'v.youku.com', 'www.douyu.com', 'www.iqiyi.com', 'vip.iqiyi.com', 'mail.qq.com','live.kuaishou.com']
+                value: ['youku.com', 'v.youku.com', 'www.douyu.com', 'www.iqiyi.com', 'vip.iqiyi.com', 'mail.qq.com', 'live.kuaishou.com']
             }];
 
             value.forEach((v) => {
@@ -92,6 +91,7 @@
         },
 
         createDarkFilter() {
+            if (util.hasElementById('dark-mode-svg')) return;
             let svgDom = '<svg id="dark-mode-svg" style="height: 0; width: 0;"><filter id="dark-mode-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.283 -0.567 -0.567 0.000 0.925 -0.567 0.283 -0.567 0.000 0.925 -0.567 -0.567 0.283 0.000 0.925 0.000 0.000 0.000 1.000 0.000"></feColorMatrix></filter><filter id="dark-mode-reverse-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.333 -0.667 -0.667 0.000 1.000 -0.667 0.333 -0.667 0.000 1.000 -0.667 -0.667 0.333 0.000 1.000 0.000 0.000 0.000 1.000 0.000"></feColorMatrix></filter></svg>';
             let div = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
             div.innerHTML = svgDom;
@@ -128,13 +128,13 @@
                         ${util.reverseFilter}
                     }
             
-                    [style*="background:url"] *
-                    [style*="background-image:url"] *
-                    [style*="background: url"] *
-                    [style*="background-image: url"] *
-                    input
-                    [background] *
-                    img[src^="https://s0.wp.com/latex.php"]
+                    [style*="background:url"] *,
+                    [style*="background-image:url"] *,
+                    [style*="background: url"] *,
+                    [style*="background-image: url"] *,
+                    input,
+                    [background] *,
+                    img[src^="https://s0.wp.com/latex.php"],
                     twitterwidget .NaturalImage-image {
                         ${util.noneFilter}
                     }
@@ -174,7 +174,7 @@
             
                     /* Page background */
                     html {
-                     ${this.isTopWindow() ? 'background: #fff !important;' : ''}
+                        background: #fff !important;
                     }
                     ${this.addExtraStyle()}
                 }
@@ -187,23 +187,14 @@
         },
 
         enableDarkMode() {
-            if (this.hasElementById('dark-mode-svg') || this.hasElementById('dark-mode-style')) return;
+            if (this.isFullScreen()) return;
             this.createDarkFilter();
             this.createDarkStyle();
         },
 
         disableDarkMode() {
-            this.removeElementById('dark-mode-svg');
-            this.removeElementById('dark-mode-style');
-        },
-
-        removeElementById(eleId) {
-            let ele = document.getElementById(eleId);
-            ele.parentNode.removeChild(ele);
-        },
-
-        hasElementById(eleId) {
-            return document.getElementById(eleId);
+            util.removeElementById('dark-mode-svg');
+            util.removeElementById('dark-mode-style');
         },
 
         addButton() {
@@ -243,21 +234,21 @@
                 let whiteList = util.getValue('exclude_list');
                 let host = location.host;
                 if (whiteList.includes(host)) {
-                    GM_registerMenuCommand('当前网站：已禁用', () => {
+                    GM_registerMenuCommand('💡 当前网站：❌', () => {
                         let index = whiteList.indexOf(host);
                         whiteList.splice(index, 1);
                         util.setValue('exclude_list', whiteList);
                         history.go(0);
                     });
                 } else {
-                    GM_registerMenuCommand('当前网站：已启用', () => {
+                    GM_registerMenuCommand('💡 当前网站：✔️', () => {
                         whiteList.push(host);
                         util.setValue('exclude_list', Array.from(new Set(whiteList)));
                         history.go(0);
                     });
                 }
 
-                GM_registerMenuCommand('设置', () => {
+                GM_registerMenuCommand('⚙️ 设置', () => {
                     let style = `
                                 .darkmode-popup { font-size: 14px !important; }
                                 .darkmode-center { display: flex;align-items: center; }
@@ -311,22 +302,14 @@
         },
 
         addListener() {
-            if (this.isDarkMode()) {
-                document.addEventListener("fullscreenchange", (e) => {
-                    if (document.fullscreenElement) {
-                        //进入全屏
-                        this.disableDarkMode();
-                    } else {
-                        //退出全屏
-                        this.enableDarkMode();
-                    }
-                });
-            }
-
-            //修复 百度搜索一次后夜间模式消失
-            window.addEventListener('urlchange', (info) => {
-                if (/https:\/\/www.baidu.com\/s/.test(info.url))
-                    history.go(0);
+            document.addEventListener("fullscreenchange", (e) => {
+                if (this.isFullScreen()) {
+                    //进入全屏
+                    this.disableDarkMode();
+                } else {
+                    //退出全屏
+                    this.isDarkMode() && this.enableDarkMode();
+                }
             });
         },
 
@@ -338,20 +321,19 @@
             return util.getValue('exclude_list').includes(location.host);
         },
 
+        isFullScreen() {
+            return document.fullscreenElement;
+        },
+
         firstEnableDarkMode() {
-            if (this.isDarkMode()) {
-                if (document.head) {
-                    this.enableDarkMode();
-                } else {
-                    const headObserver = new MutationObserver(() => {
-                        if (document.head) {
-                            headObserver.disconnect();
-                            this.enableDarkMode();
-                        }
-                    });
-                    headObserver.observe(document, {childList: true, subtree: true});
-                }
+            if (document.head) {
+                this.isDarkMode() && this.enableDarkMode();
             }
+            const headObserver = new MutationObserver(() => {
+                this.isDarkMode() && this.enableDarkMode();
+            });
+            headObserver.observe(document.head, {childList: true, subtree: true});
+
             if (document.body) {
                 this.addButton();
             } else {
