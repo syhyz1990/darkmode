@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.1.0
+// @version           2.1.3
 // @icon              https://www.youxiaohou.com/darkmode.png
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
@@ -41,7 +41,24 @@
             style.rel = 'stylesheet';
             style.id = id;
             tag === 'style' ? style.innerHTML = css : style.href = css;
-            document.head.appendChild(style);
+            doc.head.appendChild(style);
+        },
+
+        addThemeColor(color) {
+            let doc = document, meta = doc.getElementsByName('theme-color')[0];
+            if (meta) return meta.setAttribute('content', color);
+            let metaEle = doc.createElement('meta');
+            metaEle.name = 'theme-color';
+            metaEle.content = color;
+            doc.head.appendChild(metaEle);
+        },
+
+        getThemeColor() {
+            let meta = document.getElementsByName('theme-color')[0];
+            if (meta) {
+                return meta.content;
+            }
+            return '#ffffff';
         },
 
         removeElementById(eleId) {
@@ -55,6 +72,8 @@
 
         filter: '-webkit-filter: url(#dark-mode-filter) !important; filter: url(#dark-mode-filter) !important;',
         reverseFilter: '-webkit-filter: url(#dark-mode-reverse-filter) !important; filter: url(#dark-mode-reverse-filter) !important;',
+        firefoxFilter: `filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="dark-mode-filter" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.283 -0.567 -0.567 0 0.925 -0.567 0.283 -0.567 0 0.925 -0.567 -0.567 0.283 0 0.925 0 0 0 1 0"/></filter></svg>#dark-mode-filter') !important;`,
+        firefoxReverseFilter: `filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="dark-mode-reverse-filter" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.333 -0.667 -0.667 0 1 -0.667 0.333 -0.667 0 1 -0.667 -0.667 0.333 0 1 0 0 0 1 0"/></filter></svg>#dark-mode-reverse-filter') !important;`,
         noneFilter: '-webkit-filter: none !important; filter: none !important;',
     };
 
@@ -75,6 +94,9 @@
             }, {
                 name: 'exclude_list',
                 value: ['youku.com', 'v.youku.com', 'www.douyu.com', 'www.iqiyi.com', 'vip.iqiyi.com', 'mail.qq.com', 'live.kuaishou.com']
+            }, {
+                name: 'origin_theme_color',
+                value: '#ffffff'
             }];
 
             value.forEach((v) => {
@@ -92,7 +114,7 @@
 
         createDarkFilter() {
             if (util.hasElementById('dark-mode-svg')) return;
-            let svgDom = '<svg id="dark-mode-svg" style="height: 0; width: 0;"><filter id="dark-mode-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.283 -0.567 -0.567 0.000 0.925 -0.567 0.283 -0.567 0.000 0.925 -0.567 -0.567 0.283 0.000 0.925 0.000 0.000 0.000 1.000 0.000"></feColorMatrix></filter><filter id="dark-mode-reverse-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.333 -0.667 -0.667 0.000 1.000 -0.667 0.333 -0.667 0.000 1.000 -0.667 -0.667 0.333 0.000 1.000 0.000 0.000 0.000 1.000 0.000"></feColorMatrix></filter></svg>';
+            let svgDom = '<svg id="dark-mode-svg" style="height: 0; width: 0;"><filter id="dark-mode-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.283 -0.567 -0.567 0 0.925 -0.567 0.283 -0.567 0 0.925 -0.567 -0.567 0.283 0 0.925 0 0 0 1 0"></feColorMatrix></filter><filter id="dark-mode-reverse-filter" x="0" y="0" width="99999" height="99999"><feColorMatrix type="matrix" values="0.333 -0.667 -0.667 0 1 -0.667 0.333 -0.667 0 1 -0.667 -0.667 0.333 0 1 0 0 0 1 0"></feColorMatrix></filter></svg>';
             let div = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
             div.innerHTML = svgDom;
             let frag = document.createDocumentFragment();
@@ -105,7 +127,8 @@
             util.addStyle('dark-mode-style', 'style', `
                 @media screen {
                     html {
-                        ${util.filter}
+                        ${this.isFirefox() ? util.firefoxFilter : util.filter}
+                        scrollbar-color: #454a4d #202324;
                     }
             
                     /* Default Reverse rule */
@@ -125,7 +148,7 @@
                     .sr-reader,
                     .no-dark-mode,
                     .sr-backdrop {
-                        ${util.reverseFilter}
+                        ${this.isFirefox() ? util.firefoxReverseFilter : util.reverseFilter}
                     }
             
                     [style*="background:url"] *,
@@ -176,6 +199,7 @@
                     html {
                         background: #fff !important;
                     }
+                    
                     ${this.addExtraStyle()}
                 }
             
@@ -186,15 +210,21 @@
                 }`);
         },
 
+        setThemeColor() {
+            util.setValue('origin_theme_color', util.getThemeColor());
+        },
+
         enableDarkMode() {
             if (this.isFullScreen()) return;
-            this.createDarkFilter();
+            !this.isFirefox() && this.createDarkFilter();
             this.createDarkStyle();
+            util.addThemeColor('#131313')
         },
 
         disableDarkMode() {
             util.removeElementById('dark-mode-svg');
             util.removeElementById('dark-mode-style');
+            util.addThemeColor(util.getValue('origin_theme_color'))
         },
 
         addButton() {
@@ -264,7 +294,7 @@
 
                     let dom = `<div style="font-size: 1em;">
                               <label class="darkmode-setting-label">按钮位置 <div id="S-Dark-Position" class="darkmode-center"><input type="radio" name="buttonPosition" ${util.getValue('button_position') === 'left' ? 'checked' : ''} class="darkmode-setting-radio" value="left">左 <input type="radio" name="buttonPosition" style="margin-left: 30px;" ${util.getValue('button_position') === 'right' ? 'checked' : ''} class="darkmode-setting-radio" value="right">右</div></label>
-                              <label class="darkmode-setting-label">按钮大小（默认：30）<small id="currentSize">当前：${util.getValue('button_size')}</small>
+                              <label class="darkmode-setting-label"><span style="text-align: left;">按钮大小（默认：30）<small id="currentSize">当前：${util.getValue('button_size')}</small></span>
                               <input id="S-Dark-Size" type="range" class="darkmode-setting-range" min="20" max="50" step="2" value="${util.getValue('button_size')}">
                               </label>
                               <label class="darkmode-setting-label-col">排除下列网址 <textarea placeholder="列表中的域名将不开启夜间模式，一行一个，例如：v.youku.com" id="S-Dark-Exclude" class="darkmode-setting-textarea">${excludeListStr}</textarea></label>
@@ -325,6 +355,10 @@
             return document.fullscreenElement;
         },
 
+        isFirefox() {
+            return /Firefox/i.test(navigator.userAgent);
+        },
+
         firstEnableDarkMode() {
             if (document.head) {
                 this.isDarkMode() && this.enableDarkMode();
@@ -349,6 +383,7 @@
 
         init() {
             this.initValue();
+            this.setThemeColor();
             this.registerMenuCommand();
             if (this.isInExcludeList()) return;
             this.addListener();
