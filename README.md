@@ -1,7 +1,7 @@
 <center>
 <p align="center">
   <a href="https://www.youxiaohou.com" title="点击访问">
-    <img width="100" height="100" src="https://www.youxiaohou.com/logo.png">
+    <img width="100" height="100" src="https://www.youxiaohou.com/logo.gif">
   </a>
 </p>
 
