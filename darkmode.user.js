@@ -1,8 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.1.3
-// @icon              https://www.youxiaohou.com/darkmode.png
+// @version           2.1.5
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
 // @license           MIT
@@ -19,6 +18,7 @@
 // @grant             GM_setValue
 // @grant             GM_registerMenuCommand
 // @grant             GM_getResourceText
+// @icon              data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cGF0aCBkPSJNOTMuNSA5NC42YzEwLjYgMCAyMC4zLTMuMyAyOC4yLTktOC4zIDIyLjUtMzAuMiAzOC42LTU2IDM4LjYtMzIuNyAwLTU5LjMtMjUuOC01OS4zLTU3LjdTMzIuOSA4LjcgNjUuNyA4LjdoMi4yQzU0LjYgMTcgNDUuNyAzMS41IDQ1LjcgNDhjMCAyNS43IDIxLjQgNDYuNiA0Ny44IDQ2LjZ6IiBmaWxsPSIjZmZiNTc4Ii8+PHBhdGggZD0iTTEyMS42IDgxLjhjLS44IDAtMS42LjItMi4zLjctNy41IDUuMy0xNi41IDguMS0yNS44IDguMS0yNC4yIDAtNDMuOS0xOS4xLTQzLjktNDIuNyAwLTE0LjcgNy42LTI4LjEgMjAuMy0zNiAxLjEtLjcgMS44LTEuOSAxLjgtMy4yYTMuOCAzLjggMCAwIDAtMy44LTMuOGgtMi4zQzMwLjggNC45IDIuNSAzMi41IDIuNSA2Ni41UzMwLjggMTI4IDY1LjcgMTI4YzI2LjcgMCA1MC43LTE2LjUgNTkuNi00MSAuMS0uNC4yLS45LjItMS4zIDAtMi4xLTEuNy0zLjktMy45LTMuOXptLTU1LjkgMzguNWMtMzAuNSAwLTU1LjQtMjQuMi01NS40LTUzLjkgMC0yNi4yIDE5LjQtNDguNiA0NS43LTUzLjEtOSA5LjQtMTQuMiAyMS44LTE0LjIgMzQuNyAwIDI3LjggMjMuMiA1MC40IDUxLjcgNTAuNCA2LjcgMCAxMy4yLTEuMiAxOS4zLTMuNi0xMCAxNS44LTI3LjggMjUuNS00Ny4xIDI1LjV6bTM1LjYtNDcuOUg3Ny45Yy0xLjYgMC0yLjktMS4zLTIuOS0yLjkgMC0xIC41LTEuOSAxLjMtMi40TDkxLjYgNTdINzcuOWMtMS42IDAtMi45LTEuMy0yLjktMi45czEuMy0yLjkgMi45LTIuOWgyMy40YzEuNiAwIDIuOSAxLjMgMi45IDIuOSAwIDEtLjUgMS45LTEuMyAyLjRMODcuNiA2Ni42aDEzLjdjMS42IDAgMi45IDEuMyAyLjkgMi45cy0xLjMgMi45LTIuOSAyLjl6bTEzLjItMzEuMWgtMTQuNGMtMS42IDAtMi45LTEuMy0yLjktMi45IDAtMSAuNS0xLjkgMS4zLTIuNGw2LjMtNC4xaC00LjdjLTEuNiAwLTIuOS0xLjMtMi45LTIuOXMxLjMtMi45IDIuOS0yLjloMTQuNGMxLjYgMCAyLjkgMS4zIDIuOSAyLjkgMCAxLS41IDEuOS0xLjMgMi40bC02LjMgNC4xaDQuN2MxLjYgMCAyLjkgMS4zIDIuOSAyLjlzLTEuMyAyLjktMi45IDIuOXptNS42LTI3LjVIMTA4Yy0xLjYgMC0yLjktMS4zLTIuOS0yLjkgMC0xIC41LTEuOSAxLjMtMi40bDQuMS0yLjdIMTA4Yy0xLjYgMC0yLjktMS4zLTIuOS0yLjlTMTA2LjQgMCAxMDggMGgxMi4xYzEuNiAwIDIuOSAxLjMgMi45IDIuOSAwIDEtLjUgMS45LTEuMyAyLjRMMTE3LjYgOGgyLjRjMS42IDAgMi45IDEuMyAyLjkgMi45cy0xLjIgMi45LTIuOCAyLjl6IiBmaWxsPSIjNDQ0Ii8+PC9zdmc+
 // ==/UserScript==
 
 ;(function () {
@@ -87,7 +87,7 @@
                 value: 'light'
             }, {
                 name: 'button_position',
-                value: 'right'
+                value: 'left'
             }, {
                 name: 'button_size',
                 value: 30
@@ -305,7 +305,7 @@
                         icon: 'info',
                         showCloseButton: true,
                         confirmButtonText: '保存',
-                        footer: '<div style="text-align: center;font-size: 1em;">点击查看 <a href="https://www.youxiaohou.com/tool/install-darkmode.html" target="_blank">使用说明</a>，助手免费开源，<a href="https://www.youxiaohou.com/darkmode.user.js">检查更新</a><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M445.956 138.812L240.916 493.9c-11.329 19.528-12.066 44.214 0 65.123 12.067 20.909 33.898 32.607 56.465 32.607h89.716v275.044c0 31.963 25.976 57.938 57.938 57.938h134.022c32.055 0 57.938-25.975 57.938-57.938V591.63h83.453c24.685 0 48.634-12.803 61.806-35.739 13.172-22.844 12.343-50.016 0-71.386l-199.42-345.693c-13.633-23.58-39.24-39.516-68.44-39.516-29.198 0-54.897 15.935-68.438 39.516z" fill="#d81e06"/></svg></div>',
+                        footer: '<div style="text-align: center;font-size: 1em;">点击查看 <a href="https://www.youxiaohou.com/tool/install-darkmode.html" target="_blank">使用说明</a>，助手免费开源，Powered by <a href="https://www.youxiaohou.com">油小猴</a></div>',
                         customClass: {
                             popup: 'darkmode-popup',
                         },
