@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.1.5
+// @version           2.2.1
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
 // @license           MIT
@@ -42,6 +42,15 @@
             style.id = id;
             tag === 'style' ? style.innerHTML = css : style.href = css;
             doc.head.appendChild(style);
+        },
+
+        hover(ele, fn1, fn2) {
+            ele.onmouseenter = function () {  //移入事件
+                fn1.call(ele);
+            };
+            ele.onmouseleave = function () { //移出事件
+                fn2.call(ele);
+            };
         },
 
         addThemeColor(color) {
@@ -90,7 +99,7 @@
                 value: 'left'
             }, {
                 name: 'button_size',
-                value: 30
+                value: 32
             }, {
                 name: 'exclude_list',
                 value: ['youku.com', 'v.youku.com', 'www.douyu.com', 'www.iqiyi.com', 'vip.iqiyi.com', 'mail.qq.com', 'live.kuaishou.com']
@@ -218,41 +227,52 @@
             if (this.isFullScreen()) return;
             !this.isFirefox() && this.createDarkFilter();
             this.createDarkStyle();
-            util.addThemeColor('#131313')
+            util.addThemeColor('#131313');
         },
 
         disableDarkMode() {
             util.removeElementById('dark-mode-svg');
             util.removeElementById('dark-mode-style');
-            util.addThemeColor(util.getValue('origin_theme_color'))
+            util.addThemeColor(util.getValue('origin_theme_color'));
         },
 
         addButton() {
             if (this.isTopWindow()) {
-                let lightIcon = `<div style="background: #000;display: flex;align-items: center;justify-content: center;width: ${util.getValue('button_size')}px;height: ${util.getValue('button_size')}px;border-radius: 50%"><svg style="position: static;margin: 0;padding: 0;" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="${util.getValue('button_size') / 1.5}" height="${util.getValue('button_size') / 1.5}"><path d="M522.88 874.667A21.333 21.333 0 0 1 544.213 896v85.333a21.333 21.333 0 0 1-21.333 21.334h-21.333a21.333 21.333 0 0 1-21.334-21.334V896a21.333 21.333 0 0 1 21.334-21.333h21.333zm268.416-107.52l60.352 60.352a21.333 21.333 0 0 1 0 30.165l-15.083 15.083a21.333 21.333 0 0 1-30.186 0l-60.331-60.352a21.333 21.333 0 0 1 0-30.166l15.083-15.082a21.333 21.333 0 0 1 30.165 0zm-527.957 0l15.082 15.082a21.333 21.333 0 0 1 0 30.166l-60.352 60.352a21.333 21.333 0 0 1-30.165 0l-15.083-15.083a21.333 21.333 0 0 1 0-30.165l60.331-60.352a21.333 21.333 0 0 1 30.187 0zM512 277.333c141.376 0 256 114.624 256 256s-114.624 256-256 256-256-114.624-256-256 114.624-256 256-256zm0 64a192 192 0 1 0 0 384 192 192 0 0 0 0-384zm448.213 160a21.333 21.333 0 0 1 21.334 21.334V544a21.333 21.333 0 0 1-21.334 21.333H874.88A21.333 21.333 0 0 1 853.547 544v-21.333a21.333 21.333 0 0 1 21.333-21.334h85.333zm-810.666 0a21.333 21.333 0 0 1 21.333 21.334V544a21.333 21.333 0 0 1-21.333 21.333H64.213A21.333 21.333 0 0 1 42.88 544v-21.333a21.333 21.333 0 0 1 21.333-21.334h85.334zm687.04-307.413l15.082 15.083a21.333 21.333 0 0 1 0 30.165l-60.352 60.352a21.333 21.333 0 0 1-30.165 0l-15.083-15.083a21.333 21.333 0 0 1 0-30.165L806.4 193.92a21.333 21.333 0 0 1 30.187 0zm-618.496 0l60.352 60.352a21.333 21.333 0 0 1 0 30.165L263.36 299.52a21.333 21.333 0 0 1-30.187 0l-60.352-60.373a21.333 21.333 0 0 1 0-30.166l15.083-15.082a21.333 21.333 0 0 1 30.165 0zM522.9 64a21.333 21.333 0 0 1 21.334 21.333v85.334A21.333 21.333 0 0 1 522.9 192h-21.333a21.333 21.333 0 0 1-21.333-21.333V85.333A21.333 21.333 0 0 1 501.568 64h21.333z" fill="#fff"/></svg></div>`,
-                    darkIcon = `<div style="background: #333;display: flex;align-items: center;justify-content: center;width: ${util.getValue('button_size')}px;height: ${util.getValue('button_size')}px;border-radius: 50%"><svg style="position: static;margin: 0;padding: 0;" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="${util.getValue('button_size') / 1.5}" height="${util.getValue('button_size') / 1.5}"><path d="M513.173 128A255.061 255.061 0 0 0 448 298.667c0 141.376 114.624 256 256 256a255.36 255.36 0 0 0 189.803-84.203A392.855 392.855 0 0 1 896 512c0 212.075-171.925 384-384 384S128 724.075 128 512c0-209.707 168.107-380.16 376.96-383.936l8.192-.064zM395.35 213.93l-3.52 1.409C274.645 262.827 192 377.77 192 512c0 176.725 143.275 320 320 320 145.408 0 268.16-96.981 307.115-229.803l1.536-5.504-1.6.64a319.51 319.51 0 0 1-106.496 21.227l-8.555.107c-176.725 0-320-143.275-320-320 0-28.48 3.755-56.406 10.944-83.2l.405-1.536z" fill="#adbac7"/></svg></div>`;
+                let buttonSize = util.getValue('button_size');
+                let buttonPosition = util.getValue('button_position');
+                let svgSize = parseInt(buttonSize * 0.6);
+                let buttonWidth = +buttonSize + 2;
+                let html = `<div class="no-print" id="darkmode-container" style="position: fixed; ${buttonPosition}: -${buttonWidth / 2}px; bottom: 25px; cursor: pointer; z-index: 2147483647; user-select: none;"><div id="darkmode-button" style="width: ${buttonSize}px;height: ${buttonSize}px;background: #fff;border:1px solid #f6f6f6;display: flex;align-items: center;justify-content: center;border-radius: 50%;position: relative;"><svg fill="#009fe8" id="svg-light" style="width: ${svgSize}px;height: ${svgSize}px;margin: 0;padding: 0;transition: transform 0.3s, opacity 0.3s;position: absolute;${!this.isDarkMode() ? 'transform: scale(0);opacity: 0;' : ''}" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M587.264 104.96c33.28 57.856 52.224 124.928 52.224 196.608 0 218.112-176.128 394.752-393.728 394.752-29.696 0-58.368-3.584-86.528-9.728C223.744 832.512 369.152 934.4 538.624 934.4c229.376 0 414.72-186.368 414.72-416.256 1.024-212.992-159.744-389.12-366.08-413.184z"></path><path d="M340.48 567.808l-23.552-70.144-70.144-23.552 70.144-23.552 23.552-70.144 23.552 70.144 70.144 23.552-70.144 23.552-23.552 70.144zM168.96 361.472l-30.208-91.136-91.648-30.208 91.136-30.208 30.72-91.648 30.208 91.136 91.136 30.208-91.136 30.208-30.208 91.648z"></path></svg><svg fill="#009fe8" id="svg-dark" style="width: ${svgSize}px;height: ${svgSize}px;margin: 0;padding: 0;transition: transform 0.3s, opacity 0.3s;position: absolute;${this.isDarkMode() ? 'transform: scale(0);opacity: 0;' : ''}" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M234.24 512a277.76 277.76 0 1 0 555.52 0 277.76 277.76 0 1 0-555.52 0zM512 187.733a42.667 42.667 0 0 1-42.667-42.666v-102.4a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 187.733zm-258.987 107.52a42.667 42.667 0 0 1-29.866-12.373l-72.96-73.387a42.667 42.667 0 0 1 59.306-59.306l73.387 72.96a42.667 42.667 0 0 1 0 59.733 42.667 42.667 0 0 1-29.867 12.373zm-107.52 259.414H42.667a42.667 42.667 0 0 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zm34.134 331.946a42.667 42.667 0 0 1-29.44-72.106l72.96-73.387a42.667 42.667 0 0 1 59.733 59.733l-73.387 73.387a42.667 42.667 0 0 1-29.866 12.373zM512 1024a42.667 42.667 0 0 1-42.667-42.667V878.507a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 1024zm332.373-137.387a42.667 42.667 0 0 1-29.866-12.373l-73.387-73.387a42.667 42.667 0 0 1 0-59.733 42.667 42.667 0 0 1 59.733 0l72.96 73.387a42.667 42.667 0 0 1-29.44 72.106zm136.96-331.946H878.507a42.667 42.667 0 1 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zM770.987 295.253a42.667 42.667 0 0 1-29.867-12.373 42.667 42.667 0 0 1 0-59.733l73.387-72.96a42.667 42.667 0 1 1 59.306 59.306l-72.96 73.387a42.667 42.667 0 0 1-29.866 12.373z"></path></svg></div></div>`;
 
-                let o = document.createElement('div'),
-                    buttonPostion = util.getValue('button_position');
-                o.style.position = 'fixed';
-                o.style[buttonPostion] = '25px';
-                o.style.bottom = '25px';
-                o.style.cursor = 'pointer';
-                o.style.zIndex = '2147483999';
-                o.style.userSelect = 'none';
-                o.className = 'no-print';
-                o.id = 'darkBtn';
-                this.isDarkMode() ? o.innerHTML = lightIcon : o.innerHTML = darkIcon;
-                document.body.appendChild(o);
+                document.body.insertAdjacentHTML('beforeend', html);
 
-                o.addEventListener("click", () => {
+                let containerDOM = document.getElementById('darkmode-container');
+                let buttonDOM = document.getElementById('darkmode-button');
+                let lightDOM = document.getElementById('svg-light');
+                let darkDOM = document.getElementById('svg-dark');
+
+                util.hover(containerDOM, () => {
+                    containerDOM.style[buttonPosition] = '0px';
+                    containerDOM.style.transition = `${buttonPosition} 0.3s`
+                }, () => {
+                    containerDOM.style[buttonPosition] = `-${buttonWidth / 2}px`;
+                    containerDOM.style.transition = `${buttonPosition} 0.3s`
+                });
+
+                buttonDOM.addEventListener("click", () => {
                     if (this.isDarkMode()) { //黑暗模式变为正常模式
+                        lightDOM.style.transform = 'scale(0)';
+                        lightDOM.style.opacity = '0';
+                        darkDOM.style.transform = 'scale(1)';
+                        darkDOM.style.opacity = '1';
                         util.setValue('dark_mode', 'light');
-                        o.innerHTML = darkIcon;
                         this.disableDarkMode();
                     } else {
+                        lightDOM.style.transform = 'scale(1)';
+                        lightDOM.style.opacity = '1';
+                        darkDOM.style.transform = 'scale(0)';
+                        darkDOM.style.opacity = '0';
                         util.setValue('dark_mode', 'dark');
-                        o.innerHTML = lightIcon;
                         this.enableDarkMode();
                     }
                 });
