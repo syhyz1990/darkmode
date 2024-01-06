@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              夜间模式助手
 // @namespace         https://github.com/syhyz1990/darkmode
-// @version           2.2.1
+// @version           2.2.3
 // @description       实现任意网站的夜间模式，支持网站白名单
 // @author            YouXiaoHou
 // @license           MIT
@@ -10,9 +10,9 @@
 // @updateURL         https://www.youxiaohou.com/darkmode.user.js
 // @downloadURL       https://www.youxiaohou.com/darkmode.user.js
 // @match             *://*/*
-// @require           https://unpkg.com/darkrule@latest/dist/rule.min.js
-// @require           https://unpkg.com/sweetalert2@10.16.6/dist/sweetalert2.min.js
-// @resource          swalStyle https://unpkg.com/sweetalert2@10.16.6/dist/sweetalert2.min.css
+// @require           https://registry.npmmirror.com/darkrule/1.0.4/files/dist/rule.min.js
+// @require           https://registry.npmmirror.com/sweetalert2/10.16.6/files/dist/sweetalert2.min.js
+// @resource          swalStyle https://registry.npmmirror.com/sweetalert2/10.16.6/files/dist/sweetalert2.min.css
 // @run-at            document-start
 // @grant             GM_getValue
 // @grant             GM_setValue
