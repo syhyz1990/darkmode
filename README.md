@@ -31,7 +31,7 @@
 **全新 v2.0.0 版重磅上线**，底层实现方式重构，支持更多网站的夜间模式，适配国内外 95 %的网站，资源占用极小。
 
 ## 🎨 效果演示
-![](https://s1.ax1x.com/2020/03/16/8YwH1S.gif)
+![](https://pic.rmb.bdstatic.com/bjh/aec44132ccd52ed0727c92640f5eaa1c8884.gif)
 
 ## 💽 安装地址
 
@@ -62,6 +62,3 @@
 ## 🐞 Bug 反馈
 
 如果您在使用过程中遇到问题，请 [点击这里](https://wj.qq.com/s2/8150559/6c08/) 或 [发送邮件](mailto:mail@youxiaohou.com) 进行反馈。
-
-## 💻 防止迷路
-![](https://cdn.jsdelivr.net/gh/youxiaohou/img/cmqN5niG6ER9oZ2.png)
