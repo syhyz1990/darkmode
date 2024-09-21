@@ -351,6 +351,19 @@
             return window.self === window.top;
         },
 
+        syncSystemDarkMode() { // 监听系统的深色模式变化
+            const systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)'); // 当系统处于深色模式时，启用夜间模式
+            const applySystemDarkMode = (e) => {
+                if (e.matches) {
+                    this.enableDarkMode(); // 系统深色模式时启用夜间模式
+                } else {
+                    this.disableDarkMode(); // 系统亮色模式时禁用夜间模式
+                }
+            }; // 初始时根据系统的模式设置
+            applySystemDarkMode(systemDarkMode); // 监听系统模式的变化
+            systemDarkMode.addEventListener('change', applySystemDarkMode);
+        },        
+
         addListener() {
             document.addEventListener("fullscreenchange", (e) => {
                 if (this.isFullScreen()) {
@@ -406,6 +419,7 @@
             this.setThemeColor();
             this.registerMenuCommand();
             if (this.isInExcludeList()) return;
+            this.syncSystemDarkMode(); // 调用同步系统深色模式功能
             this.addListener();
             this.firstEnableDarkMode();
         }
